@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>優待券タイムセール｜U39 GOLF</title>
+<meta name="description" content="39歳以下限定・U39 GOLFの優待プレー券タイムセール。全国のゴルフ場の特別プレー券を期間限定でご案内します。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#008037;
+  --green-deep:#04391d;
+  --green-ink:#0b2a19;
+  --lime:#c8f03c;
+  --sale:#ff5a1f;
+  --cream:#faf7ee;
+  --paper:#ffffff;
+  --ink:#16201a;
+  --muted:#66736b;
+  --line:#e3e1d6;
+  --weekday:#1f6fd1;
+  --holiday:#e0661a;
+  --num:"Barlow Condensed","Noto Sans JP",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+/* header */
+.top{position:absolute;inset:0 0 auto 0;z-index:5}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.top img{height:34px;display:block}
+.top a.login{font-size:13px;font-weight:700;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.45);padding:6px 14px;border-radius:999px}
+
+/* hero */
+.hero{position:relative;overflow:hidden;color:#fff;background:
+  radial-gradient(900px 500px at 85% -10%,rgba(200,240,60,.28),transparent 60%),
+  linear-gradient(160deg,#0a5a2c 0%,var(--green-deep) 60%,#02200f 100%);
+  padding:104px 0 128px}
+.hero::after{content:"";position:absolute;left:-10%;right:-10%;bottom:-170px;height:240px;background:var(--cream);border-radius:50% 50% 0 0/100% 100% 0 0}
+.hero .wrap{position:relative;z-index:2}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--lime);color:var(--green-ink);font-weight:900;font-size:13px;padding:5px 14px;border-radius:999px;letter-spacing:.04em}
+.hero h1{margin:18px 0 0;font-weight:900;line-height:1.08}
+.hero h1 .en{display:block;font-family:var(--num);font-weight:800;font-size:clamp(64px,17vw,168px);letter-spacing:-.01em;line-height:.86;text-transform:uppercase}
+.hero h1 .en em{font-style:normal;color:var(--lime)}
+.hero h1 .ja{display:block;margin-top:18px;font-size:clamp(20px,4.6vw,34px)}
+.lead{margin:14px 0 0;max-width:620px;font-size:15px;color:rgba(255,255,255,.86)}
+.closed .points,.closed #tickets,.closed .steps,.closed .notes,.closed .final,.closed .bar,.closed .hero .sub{display:none}
+.closed .hero{min-height:100vh}
+.count[hidden]{display:none}
+.bar.nocount .t{display:none}
+.count{margin-top:28px;display:inline-block;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:14px 18px;backdrop-filter:blur(4px)}
+.count .label{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--lime)}
+.count .digits{display:flex;align-items:baseline;gap:10px;margin-top:2px;font-variant-numeric:tabular-nums}
+.count .digits b{font-family:var(--num);font-weight:700;font-size:clamp(40px,10vw,64px);line-height:1}
+.count .digits span{font-size:12px;font-weight:700;margin-right:6px;color:rgba(255,255,255,.75)}
+.count .until{font-size:12px;color:rgba(255,255,255,.75);margin-top:4px}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--sale);color:#fff;text-decoration:none;font-weight:900;font-size:17px;padding:16px 32px;border-radius:999px;box-shadow:0 10px 24px rgba(255,90,31,.35);transition:transform .15s ease}
+.cta:hover{transform:translateY(-2px)}
+.go:hover{background:#006a2e}
+.cta:focus-visible,.chip:focus-visible,.go:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.hero .cta{margin-top:26px}
+.hero .sub{display:block;margin-top:10px;font-size:12px;color:rgba(255,255,255,.7)}
+
+/* points */
+.points{position:relative;z-index:3;margin-top:-28px}
+.points ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.points li{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px 16px;text-align:center}
+.points .k{font-size:12px;font-weight:700;color:var(--muted)}
+.points .v{font-family:var(--num);font-weight:800;font-size:clamp(34px,7vw,52px);line-height:1.05;color:var(--green);font-variant-numeric:tabular-nums}
+.points .v small{font-family:"Noto Sans JP",sans-serif;font-size:.36em;font-weight:900;margin-left:2px}
+.points .n{font-size:11px;color:var(--muted)}
+
+section{padding:64px 0}
+h2{margin:0;font-size:clamp(24px,5vw,34px);font-weight:900;line-height:1.3;text-wrap:balance}
+h2 .en{display:block;font-family:var(--num);font-size:15px;letter-spacing:.18em;color:var(--green);font-weight:700}
+.notice{display:flex;align-items:center;gap:10px;margin:14px 0 4px;padding:12px 16px;background:#fff1c9;border:2px solid #f0b400;border-radius:12px;font-size:15px;font-weight:900;color:var(--ink);line-height:1.5}
+.notice span{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sale);color:#fff;font-family:var(--num);font-size:18px;line-height:1}
+.desc{margin:8px 0 0;color:var(--muted);font-size:14px}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 6px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--green-ink);border-color:var(--green-ink);color:#fff}
+.sep{width:1px;background:var(--line);margin:4px 4px}
+.result{font-size:12px;color:var(--muted);margin:10px 0 14px}
+
+/* tickets */
+.grid{align-items:start;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.ticket{position:relative;display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:16px}
+.photo{position:relative;aspect-ratio:1480/560;border-radius:15px 15px 0 0;overflow:hidden;background:linear-gradient(135deg,#0a5a2c,var(--green-deep))}
+.photo img{display:block;width:100%;height:100%;object-fit:cover}
+.stock{position:absolute;left:8px;top:8px;padding:3px 10px;border-radius:999px;background:var(--green-ink);color:#fff;font-size:12px;font-weight:900;line-height:1.3;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.stock.last{background:#e11900;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.body{display:flex;flex-direction:column;flex:1;padding:14px 16px 14px}
+.go{margin-top:auto}
+.tags{display:flex;gap:6px;align-items:center;font-size:11px;font-weight:700}
+.tag{padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.tag.d{color:var(--weekday);border-color:currentColor}
+.tag.h{color:var(--holiday);border-color:currentColor}
+.left{margin-left:auto;color:var(--sale)}
+.ticket h3{margin:10px 0 0;font-size:16px;font-weight:900;line-height:1.4;min-height:2.8em}
+.ticket h3 small{display:block;font-size:11px;font-weight:500;color:var(--muted)}
+.cut{border-top:2px dashed var(--line);margin:12px -16px}
+.price{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.price .each .k{font-size:11px;font-weight:700;color:var(--muted)}
+.price .each .v{font-family:var(--num);font-weight:800;font-size:38px;line-height:1;color:var(--green);font-variant-numeric:tabular-nums}
+.price .each .v small{font-family:"Noto Sans JP",sans-serif;font-size:13px;font-weight:900}
+.price .total{text-align:right;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.price .total b{display:block;font-size:16px;color:var(--ink)}
+.price .total s{color:var(--muted)}
+.off{display:inline-block;background:var(--sale);color:#fff;font-size:11px;font-weight:900;padding:1px 8px;border-radius:6px}
+.note{margin:-4px 0 12px;font-size:11px;color:var(--muted)}
+.price{margin-bottom:12px}
+.about summary{list-style:none;cursor:pointer;display:flex;align-items:flex-start;gap:10px;border-radius:8px}
+.about summary::-webkit-details-marker{display:none}
+.about summary h3{flex:1}
+.about summary:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.more{flex:none;margin-top:6px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:900;color:#fff;background:var(--green);padding:6px 12px;border-radius:999px;white-space:nowrap;transition:background .15s ease}
+.about summary:hover .more{background:#006a2e}
+.about[open] .more{background:var(--green-ink)}
+.more::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s ease}
+.about[open] .more::after{transform:rotate(-135deg) translate(-2px,-1px)}
+.panel{margin:8px 0 0;padding:10px 12px;background:var(--cream);border-radius:10px}
+.about p{margin:0;font-size:12.5px;line-height:1.75;color:var(--ink);white-space:pre-line}
+.facts{list-style:none;margin:0 0 8px;padding:0 0 8px;border-bottom:1px solid var(--line);display:grid;gap:4px}
+.facts li{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;font-weight:700;line-height:1.5}
+.facts svg{flex:none;width:18px;height:18px;margin-top:1px;fill:none;stroke:var(--green);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.go{display:block;text-decoration:none;transition:background .15s ease;text-align:center;background:var(--green);color:#fff;font-weight:900;font-size:14px;padding:10px;border-radius:10px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:32px 0}
+
+/* steps */
+.steps{background:var(--green-ink);color:#fff}
+.steps h2 .en{color:var(--lime)}
+.steps ol{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}
+.steps li{counter-increment:s;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:20px}
+.steps li::before{content:"0" counter(s);font-family:var(--num);font-weight:800;font-size:44px;line-height:1;color:var(--lime)}
+.steps li b{display:block;margin-top:6px;font-size:17px}
+.steps li p{margin:6px 0 0;font-size:13px;color:rgba(255,255,255,.8)}
+
+/* notes */
+.notes ul{margin:18px 0 0;padding-left:1.2em;font-size:13px;color:var(--muted)}
+.notes li{margin:6px 0}
+
+.final{text-align:center;padding:56px 0 120px}
+.final p{margin:10px 0 22px;color:var(--muted);font-size:14px}
+
+footer{background:#02200f;color:rgba(255,255,255,.7);font-size:12px;padding:28px 0 96px;text-align:center}
+footer a{margin:0 8px;color:inherit}
+
+/* sticky bar (mobile) */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding:10px 16px;display:none;align-items:center;gap:12px}
+.bar .t{font-size:11px;font-weight:700;color:var(--muted);line-height:1.3}
+.bar .t b{display:block;font-family:var(--num);font-size:20px;color:var(--sale);font-variant-numeric:tabular-nums}
+.bar .cta{flex:1;padding:12px;font-size:15px;box-shadow:none}
+
+@media (max-width:720px){
+  .points ul{grid-template-columns:1fr 1fr}
+  .points li:first-child{grid-column:1/-1}
+  .steps ol{grid-template-columns:1fr}
+  .bar{display:flex}
+  section{padding:48px 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a href="https://u39-golf.jp/"><img src="img/logo.png" alt="U39 GOLF"></a>
+    <a class="login" href="https://u39-golf.jp/signup">会員登録（無料）</a>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <span class="badge">39歳以下限定</span>
+      <h1>
+        <span class="en">Time <em>Sale</em></span>
+        <span class="ja">優待プレー券、いまだけの特別販売。</span>
+      </h1>
+      <p class="lead">全国のゴルフ場で使える優待券を、枚数限定でご案内。<br>仲間と4人で回れば、1人あたり<strong id="heroEach"></strong>から。</p>
+      <div class="count" id="count" role="timer" aria-live="off" hidden>
+        <div class="label" id="countLabel">販売終了まで</div>
+        <div class="digits"><b id="cd">--</b><span>日</span><b id="ch">--</b><span>時間</span><b id="cm">--</b><span>分</span><b id="cs">--</b><span>秒</span></div>
+        <div class="until" id="until"></div>
+      </div>
+      <div>
+        <a class="cta" href="#tickets">販売中の優待券を見る</a>
+        <span class="sub">※ ご購入にはU39 GOLFへの会員登録（無料）が必要です</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="points">
+    <div class="wrap">
+      <ul>
+        <li><div class="k">4人でプレーした場合</div><div class="v"><span id="pEach"></span><small>円〜/人</small></div><div class="n">1枚あたりの最安値を4人で割った金額</div></li>
+        <li><div class="k">販売中のゴルフ場</div><div class="v"><span id="pCourse"></span><small>コース</small></div><div class="n" id="pPref"></div></li>
+        <li><div class="k">残りわずか</div><div class="v"><span id="pLeft"></span><small>枚</small></div><div class="n">売り切れ次第、販売終了</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <section id="tickets">
+    <div class="wrap">
+      <h2><span class="en">TICKETS</span>販売中の優待券</h2>
+      <p class="notice"><span aria-hidden="true">!</span>ゴルフ利用税、昼食代等は別途必要になります。</p>
+      <p class="desc">コース名をタップすると、紹介文が開きます。</p>
+      <div class="filters" id="filters"></div>
+      <div class="result" id="result"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="steps">
+    <div class="wrap">
+      <h2><span class="en">HOW TO</span>ご利用は、かんたん3ステップ</h2>
+      <ol>
+        <li><b>会員登録</b><p>39歳以下の方なら無料で登録できます。登録済みの方はログインするだけ。</p></li>
+        <li><b>優待券を選んで購入</b><p>行きたいゴルフ場の券を選び、クレジットカードでお支払い。</p></li>
+        <li><b>有効期限内にプレー</b><p>購入した券は電子チケットで届きます。有効期限内にご利用ください。</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="notes">
+    <div class="wrap">
+      <h2><span class="en">NOTES</span>ご購入前にご確認ください</h2>
+      <ul>
+        <li>ご来場の際は、各ゴルフ場のドレスコードやルールを守り、プレーファストを心掛けるなど、マナーあるご利用にご協力をお願いいたします。<br>悪質または故意によるマナー違反が確認された場合は、利用停止・強制退会となる場合がございます。</li>
+        <li>優待券は枚数限定です。残り枚数は約5分ごとに更新しています。タイミングによっては、購入ページで売り切れと表示される場合があります。</li>
+        <li>平日券・土日祝券で利用できる日が異なります。コースによっては利用条件（時間帯・対象コースなど）があります。</li>
+        <li>有効期限・販売期限は券ごとに購入ページへ表示されます。</li>
+        <li>お支払いはクレジットカードのみです。詳しくは<a href="https://u39-golf.jp/terms">利用規約</a>・<a href="https://u39-golf.jp/legal-notice">特定商取引法表示</a>をご覧ください。</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="final">
+    <div class="wrap">
+      <h2>なくなる前に、次のラウンドを決めよう。</h2>
+      <p>売り切れた券の再販売は未定です。</p>
+      <a class="cta" href="#tickets">販売中の優待券を見る</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://u39-golf.jp/terms">利用規約</a><a href="https://u39-golf.jp/legal-notice">特定商取引法表示</a><a href="https://teetime.co.jp/privacy.html">プライバシーポリシー</a><a href="https://teetime.co.jp/">運営会社</a><a href="mailto:info@u39-golf.jp">お問い合わせ</a>
+    <div style="margin-top:10px">© 2026 U39 GOLF All Rights Reserved.</div>
+  </div>
+</footer>
+
+<div class="bar" id="bar">
+  <div class="t"><span id="barLabel">終了まで</span><b id="barCount">--</b></div>
+  <a class="cta" href="#tickets">優待券を見る</a>
+</div>
+
+<script>
+/* 券のデータは data/tickets.json から読み込みます。
+   このファイルは管理画面（Google Apps Script）が約5分ごとに在庫を確認し、変化があったときだけ書き換えます。 */
+const DATA_URL = "data/tickets.json";
+const COURSES_URL = "data/courses.json";   // ゴルフ場名 → 市区町村・写真
+const BASE_URL = "https://u39-golf.jp/discount-purchase/";
+const REFRESH_MS = 5 * 60 * 1000;
+
+const AREAS = {
+  "北海道・東北":["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県"],
+  "関東":["茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県"],
+  "甲信越・北陸・東海":["新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県"],
+  "近畿":["滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県"],
+  "中国":["鳥取県","島根県","岡山県","広島県","山口県"],
+  "四国・九州・沖縄":["徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"]
+};
+const yen = n => n.toLocaleString("ja-JP");
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let items = [], courses = null, end = null, timer = null, phase = "on", closed = false;
+const state = {type:"all", area:"all"};
+const openIds = new Set();   // 紹介文を開いているカード（再読み込みしても開いたままにする）
+
+async function load(){
+  try{
+    if(!courses) courses = await fetch(COURSES_URL).then(r => r.json()).catch(() => ({}));
+    const data = await fetch(DATA_URL + "?t=" + Date.now(), {cache:"no-store"}).then(r => r.json());
+    items = data.tickets.map(t => {
+      const m = t.course.match(/^(.*?)【(.*)】$/);
+      const c = courses[t.course] || {};
+      return {...t,
+        name: m ? m[1] : t.course, group: m ? m[2] : "",
+        city: c.city || "", photo: t.photo || c.photo || "", desc: c.desc || "", access: c.access || "", practice: c.practice || "",
+        each: Math.ceil(t.price / 4),
+        off: t.regular && t.regular > t.price ? Math.round((1 - t.price / t.regular) * 100) : 0,
+        area: Object.keys(AREAS).find(a => AREAS[a].includes(t.pref)) || "その他"};
+    });
+    setCountdown(data);
+    if(closed) return;
+  }catch(e){
+    if(!items.length) $("result").textContent = "券の情報を読み込めませんでした。時間をおいて再度お試しください。";
+    return;
+  }
+  summary();
+  buildFilters();
+  render();
+}
+
+function summary(){
+  const has = items.length > 0;
+  const minEach = has ? yen(Math.min(...items.map(t => t.each))) : "—";
+  $("heroEach").textContent = has ? minEach + "円" : "—";
+  $("pEach").textContent = minEach;
+  $("pCourse").textContent = new Set(items.map(t => t.course)).size;
+  $("pPref").textContent = "全国" + new Set(items.map(t => t.pref)).size + "府県";
+  $("pLeft").textContent = items.reduce((s, t) => s + t.left, 0);
+}
+
+function buildFilters(){
+  const areas = Object.keys(AREAS).filter(a => items.some(t => t.area === a));
+  if(state.area !== "all" && !areas.includes(state.area)) state.area = "all";
+  const chips = [["type","all","すべて"],["type","d","平日"],["type","h","土日祝"],null,["area","all","全国"],...areas.map(a => ["area",a,a])];
+  const box = $("filters");
+  box.replaceChildren();
+  chips.forEach(c => {
+    if(!c){ const s = document.createElement("span"); s.className = "sep"; box.append(s); return; }
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button"; b.textContent = c[2];
+    b.dataset.key = c[0]; b.dataset.val = c[1];
+    b.addEventListener("click", () => { state[c[0]] = c[1]; render(); });
+    box.append(b);
+  });
+}
+
+function render(){
+  $("filters").querySelectorAll(".chip").forEach(b =>
+    b.setAttribute("aria-pressed", String(state[b.dataset.key] === b.dataset.val)));
+  const list = items.filter(t => (state.type === "all" || t.type === state.type) && (state.area === "all" || t.area === state.area));
+  const grid = $("grid");
+  grid.replaceChildren();
+  if(!items.length){
+    $("result").textContent = "";
+    grid.innerHTML = `<div class="empty">ただいま販売中の優待券はありません。次回の販売をお待ちください。</div>`;
+    return;
+  }
+  $("result").textContent = list.length + "枚の優待券";
+  // 値引きの札：全券が同じ割引率なら「◯%OFF」、券ごとに違うなら「◯円OFF」
+  const sameRate = new Set(items.filter(t => t.off).map(t => t.off)).size === 1;
+  if(!list.length){
+    grid.innerHTML = `<div class="empty">この条件の優待券は現在ありません。</div>`;
+    return;
+  }
+  list.forEach(t => {
+    const a = document.createElement("article");
+    a.className = "ticket";
+    const title = `<h3>${esc(t.name)}${t.group ? `<small>${esc(t.group)}</small>` : ""}</h3>`;
+    a.innerHTML = `
+      <div class="photo">${t.photo ? `<img src="${esc(t.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span class="stock${t.left === 1 ? " last" : ""}">${t.left === 1 ? "ラスト1枚！" : "残り" + t.left + "枚"}</span></div>
+      <div class="body">
+      <div class="tags"><span class="tag">${esc(t.pref)}${t.city ? " " + esc(t.city) : ""}</span><span class="tag ${t.type === "d" ? "d" : "h"}">${t.type === "d" ? "平日" : "土日祝"}</span></div>
+      ${t.desc
+        ? `<details class="about"${openIds.has(t.id) ? " open" : ""}><summary>${title}<span class="more">コース紹介</span></summary><div class="panel">${facts(t)}<p>${esc(t.desc)}</p></div></details>`
+        : title}
+      <div class="cut"></div>
+      <div class="price">
+        <div class="each"><div class="k">4人でプレーなら1人あたり</div><div class="v">${yen(t.each)}<small>円</small></div></div>
+        <div class="total">${t.off ? `<span class="off">${sameRate ? t.off + "%OFF" : yen(t.regular - t.price) + "円OFF"}</span> <s>¥${yen(t.regular)}</s>` : "1枚"}<b>¥${yen(t.price)}</b></div>
+      </div>
+      ${t.note ? `<div class="note">※ ${esc(t.note)}</div>` : ""}
+      <a class="go" href="${BASE_URL + encodeURIComponent(t.id)}">この券を購入する →</a>
+      </div>`;
+    const d = a.querySelector("details");
+    if(d) d.addEventListener("toggle", () => { d.open ? openIds.add(t.id) : openIds.delete(t.id); });
+    grid.append(a);
+  });
+}
+
+// 紹介文の上に出す「アクセス」の行（確認できたコースだけ）
+const ICON_CAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11m-14 0h14a2 2 0 0 1 2 2v3H3v-3a2 2 0 0 1 2-2zm0 5v2m14-2v2M7 14h.01M17 14h.01"/></svg>';
+function facts(t){
+  const rows = [];
+  if(t.access) rows.push(`<li>${ICON_CAR}<span>${esc(t.access)}</span></li>`);
+  return rows.length ? `<ul class="facts">${rows.join("")}</ul>` : "";
+}
+
+// セール終了後はLPを閉じる（券の一覧を消し、終了の案内だけにする）
+function closeSale(){
+  clearTimeout(timer);
+  closed = true;
+  items = [];
+  document.body.classList.add("closed");
+  $("count").hidden = true;
+  document.querySelector(".hero h1 .ja").textContent = "タイムセールは終了しました。";
+  document.querySelector(".hero .lead").textContent = "たくさんのご利用、ありがとうございました。優待券の最新の販売状況は、U39 GOLFの優待券一覧をご覧ください。";
+  const cta = document.querySelector(".hero .cta");
+  cta.textContent = "U39 GOLFの優待券一覧へ";
+  cta.href = "https://u39-golf.jp/discount-purchase";
+  $("grid").replaceChildren();
+}
+
+// countdown
+const p2 = n => String(n).padStart(2,"0");
+function setCountdown(data){
+  const start = data.saleStart ? new Date(data.saleStart) : null;
+  const before = start && !isNaN(start) && start > Date.now();
+  // 開始前は開始時刻まで、開始後は終了時刻までを数える
+  end = before ? start : (data.saleEnd ? new Date(data.saleEnd) : null);
+  const label = before ? "セール開始まで" : data.countLabel;
+  phase = before ? "before" : "on";
+  const ok = end && !isNaN(end);
+  if(data.closed || (ok && !before && end <= Date.now())){ closeSale(); return; }
+  $("count").hidden = !ok;
+  $("bar").classList.toggle("nocount", !ok);
+  clearTimeout(timer);
+  if(!ok) return;
+  $("countLabel").textContent = label || "販売終了まで";
+  $("barLabel").textContent = before ? "開始まで" : "終了まで";
+  $("until").textContent = end.toLocaleString("ja-JP",{timeZone:"Asia/Tokyo",month:"numeric",day:"numeric",weekday:"short",hour:"2-digit",minute:"2-digit"}) + (before ? " スタート" : " まで");
+  tick();
+}
+function tick(){
+  const ms = end - Date.now();
+  if(ms <= 0 && phase === "before"){ load(); return; }   // 開始時刻になったら最新の価格を読み直す
+  if(ms <= 0){ closeSale(); return; }
+  const s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  $("cd").textContent = d; $("ch").textContent = p2(h); $("cm").textContent = p2(m); $("cs").textContent = p2(s % 60);
+  $("barCount").textContent = (d ? d + "日 " : "") + p2(h) + ":" + p2(m) + ":" + p2(s % 60);
+  timer = setTimeout(tick, 1000);
+}
+
+load();
+setInterval(() => { if(!document.hidden && !closed) load(); }, REFRESH_MS);
+</script>
+</body>
+</html>
