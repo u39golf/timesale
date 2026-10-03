@@ -353,7 +353,7 @@ function render(){
   }
   $("result").textContent = list.length + "枚の優待券";
   // 値引きの札：全券が同じ割引率なら「◯%OFF」、券ごとに違うなら「◯円OFF」
-  // 残り枚数の札（ラスト1枚！など）はセール開始後から出す
+  // 「ラスト1枚！」の札はセール開始後、残り1枚の券にだけ出す
   const showStock = phase !== "before";
   const sameRate = new Set(items.filter(t => t.off).map(t => t.off)).size === 1;
   if(!list.length){
@@ -365,7 +365,7 @@ function render(){
     a.className = "ticket";
     const title = `<h3>${esc(t.name)}${t.group ? `<small>${esc(t.group)}</small>` : ""}</h3>`;
     a.innerHTML = `
-      <div class="photo">${t.photo ? `<img src="${esc(t.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ""}${showStock ? `<span class="stock${t.left === 1 ? " last" : ""}">${t.left === 1 ? "ラスト1枚！" : "残り" + t.left + "枚"}</span>` : ""}</div>
+      <div class="photo">${t.photo ? `<img src="${esc(t.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ""}${showStock && t.left === 1 ? `<span class="stock last">ラスト1枚！</span>` : ""}</div>
       <div class="body">
       <div class="tags"><span class="tag">${esc(t.pref)}${t.city ? " " + esc(t.city) : ""}</span><span class="tag ${t.type === "d" ? "d" : "h"}">${t.type === "d" ? "平日" : "土日祝"}</span></div>
       ${t.desc
