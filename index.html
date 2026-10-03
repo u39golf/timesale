@@ -137,6 +137,9 @@ h2 .en{display:block;font-family:var(--num);font-size:15px;letter-spacing:.18em;
 .facts li{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;font-weight:700;line-height:1.5}
 .facts svg{flex:none;width:18px;height:18px;margin-top:1px;fill:none;stroke:var(--green);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .go{display:block;text-decoration:none;transition:background .15s ease;text-align:center;background:var(--green);color:#fff;font-weight:900;font-size:14px;padding:10px;border-radius:10px}
+.more-sold{grid-column:1/-1;justify-self:center;appearance:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;font-size:14px;font-weight:700;padding:10px 22px;border-radius:999px;cursor:pointer}
+.more-sold:hover{border-color:var(--green);color:var(--green)}
+.more-sold:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:32px 0}
 
 /* steps */
@@ -292,7 +295,8 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 let items = [], sold = [], lineup = null, courses = null, end = null, timer = null, phase = "on", closed = false;
-const state = {type:"all", area:"all"};
+const state = {type:"all", area:"all", allSold:false};
+const SOLD_PREVIEW = 3;   // 売り切れは最初にこの枚数だけ見せ、残りは「売り切れをすべて見る」で開く
 const openIds = new Set();   // 紹介文を開いているカード（再読み込みしても開いたままにする）
 
 async function load(){
@@ -372,7 +376,19 @@ function render(){
     grid.innerHTML = `<div class="empty">この条件の優待券は現在ありません。</div>`;
     return;
   }
-  [...soldList, ...list].forEach(t => {
+  const shownSold = state.allSold ? soldList : soldList.slice(0, SOLD_PREVIEW);
+  const hiddenSold = soldList.length - shownSold.length;
+  const more = () => {
+    if(soldList.length <= SOLD_PREVIEW) return;
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "more-sold";
+    b.textContent = state.allSold ? "売り切れをたたむ" : `売り切れをすべて見る（ほか${hiddenSold}枚）`;
+    b.setAttribute("aria-expanded", String(state.allSold));
+    b.addEventListener("click", () => { state.allSold = !state.allSold; render(); });
+    grid.append(b);
+  };
+  [...shownSold, null, ...list].forEach(t => {
+    if(t === null){ more(); return; }
     const a = document.createElement("article");
     a.className = "ticket" + (t.soldOut ? " soldout" : "");
     const title = `<h3>${esc(t.name)}${t.group ? `<small>${esc(t.group)}</small>` : ""}</h3>`;
