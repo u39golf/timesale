@@ -355,7 +355,7 @@ function render(){
     b.setAttribute("aria-pressed", String(state[b.dataset.key] === b.dataset.val)));
   const match = t => (state.type === "all" || t.type === state.type) && (state.area === "all" || t.area === state.area);
   const list = items.filter(match);
-  const soldList = phase === "before" ? [] : sold.filter(match);   // 売り切れは一覧の最後にまとめて出す
+  const soldList = phase === "before" ? [] : sold.filter(match);   // 売り切れは一覧の最初にまとめて出す
   const grid = $("grid");
   grid.replaceChildren();
   if(!items.length){
@@ -372,7 +372,7 @@ function render(){
     grid.innerHTML = `<div class="empty">この条件の優待券は現在ありません。</div>`;
     return;
   }
-  [...list, ...soldList].forEach(t => {
+  [...soldList, ...list].forEach(t => {
     const a = document.createElement("article");
     a.className = "ticket" + (t.soldOut ? " soldout" : "");
     const title = `<h3>${esc(t.name)}${t.group ? `<small>${esc(t.group)}</small>` : ""}</h3>`;
