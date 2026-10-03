@@ -382,7 +382,7 @@ function render(){
     if(soldList.length <= SOLD_PREVIEW) return;
     const b = document.createElement("button");
     b.type = "button"; b.className = "more-sold";
-    b.textContent = state.allSold ? "売り切れをたたむ" : `売り切れをすべて見る（ほか${hiddenSold}枚）`;
+    b.textContent = state.allSold ? "売り切れをたたむ" : "売り切れをすべて見る";
     b.setAttribute("aria-expanded", String(state.allSold));
     b.addEventListener("click", () => { state.allSold = !state.allSold; render(); });
     grid.append(b);
