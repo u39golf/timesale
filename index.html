@@ -95,6 +95,11 @@ h2 .en{display:block;font-family:var(--num);font-size:15px;letter-spacing:.18em;
 .photo{position:relative;aspect-ratio:1480/560;border-radius:15px 15px 0 0;overflow:hidden;background:linear-gradient(135deg,#0a5a2c,var(--green-deep))}
 .photo img{display:block;width:100%;height:100%;object-fit:cover}
 .stock{position:absolute;left:8px;top:8px;padding:3px 10px;border-radius:999px;background:var(--green-ink);color:#fff;font-size:12px;font-weight:900;line-height:1.3;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.stock.sold{background:#555;font-size:13px}
+.soldout .photo img{filter:grayscale(1) brightness(.85)}
+.soldout .price,.soldout h3{opacity:.55}
+.go.done{background:#c9ccc9;color:#555;cursor:default}
+.go.done:hover{background:#c9ccc9}
 .stock.last{background:#e11900;animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .body{display:flex;flex-direction:column;flex:1;padding:14px 16px 14px}
@@ -270,6 +275,7 @@ footer a{margin:0 8px;color:inherit}
    このファイルは管理画面（Google Apps Script）が約5分ごとに在庫を確認し、変化があったときだけ書き換えます。 */
 const DATA_URL = "data/tickets.json";
 const COURSES_URL = "data/courses.json";   // ゴルフ場名 → 市区町村・写真
+const LINEUP_URL = "data/lineup.json";     // セール開始時に掲載していた券（在庫から消えたら「売り切れ」で残す）
 const BASE_URL = "https://u39-golf.jp/discount-purchase/";
 const REFRESH_MS = 5 * 60 * 1000;
 
@@ -285,15 +291,16 @@ const yen = n => n.toLocaleString("ja-JP");
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-let items = [], courses = null, end = null, timer = null, phase = "on", closed = false;
+let items = [], sold = [], lineup = null, courses = null, end = null, timer = null, phase = "on", closed = false;
 const state = {type:"all", area:"all"};
 const openIds = new Set();   // 紹介文を開いているカード（再読み込みしても開いたままにする）
 
 async function load(){
   try{
     if(!courses) courses = await fetch(COURSES_URL).then(r => r.json()).catch(() => ({}));
+    if(!lineup) lineup = await fetch(LINEUP_URL).then(r => r.json()).then(d => d.tickets).catch(() => []);
     const data = await fetch(DATA_URL + "?t=" + Date.now(), {cache:"no-store"}).then(r => r.json());
-    items = data.tickets.map(t => {
+    const decorate = t => {
       const m = t.course.match(/^(.*?)【(.*)】$/);
       const c = courses[t.course] || {};
       return {...t,
@@ -302,7 +309,10 @@ async function load(){
         each: Math.ceil(t.price / 4),
         off: t.regular && t.regular > t.price ? Math.round((1 - t.price / t.regular) * 100) : 0,
         area: Object.keys(AREAS).find(a => AREAS[a].includes(t.pref)) || "その他"};
-    });
+    };
+    items = data.tickets.map(decorate);
+    const onSale = new Set(items.map(t => t.id));
+    sold = lineup.filter(t => !onSale.has(t.id)).map(t => ({...decorate(t), soldOut: true}));
     setCountdown(data);
     if(closed) return;
   }catch(e){
@@ -343,7 +353,9 @@ function buildFilters(){
 function render(){
   $("filters").querySelectorAll(".chip").forEach(b =>
     b.setAttribute("aria-pressed", String(state[b.dataset.key] === b.dataset.val)));
-  const list = items.filter(t => (state.type === "all" || t.type === state.type) && (state.area === "all" || t.area === state.area));
+  const match = t => (state.type === "all" || t.type === state.type) && (state.area === "all" || t.area === state.area);
+  const list = items.filter(match);
+  const soldList = phase === "before" ? [] : sold.filter(match);   // 売り切れは一覧の最後にまとめて出す
   const grid = $("grid");
   grid.replaceChildren();
   if(!items.length){
@@ -351,21 +363,21 @@ function render(){
     grid.innerHTML = `<div class="empty">ただいま販売中の優待券はありません。次回の販売をお待ちください。</div>`;
     return;
   }
-  $("result").textContent = list.length + "枚の優待券";
+  $("result").textContent = list.length + "枚販売中" + (soldList.length ? "・" + soldList.length + "枚売り切れ" : "");
   // 値引きの札：全券が同じ割引率なら「◯%OFF」、券ごとに違うなら「◯円OFF」
   // 「ラスト1枚！」の札はセール開始後、残り1枚の券にだけ出す
   const showStock = phase !== "before";
   const sameRate = new Set(items.filter(t => t.off).map(t => t.off)).size === 1;
-  if(!list.length){
+  if(!list.length && !soldList.length){
     grid.innerHTML = `<div class="empty">この条件の優待券は現在ありません。</div>`;
     return;
   }
-  list.forEach(t => {
+  [...list, ...soldList].forEach(t => {
     const a = document.createElement("article");
-    a.className = "ticket";
+    a.className = "ticket" + (t.soldOut ? " soldout" : "");
     const title = `<h3>${esc(t.name)}${t.group ? `<small>${esc(t.group)}</small>` : ""}</h3>`;
     a.innerHTML = `
-      <div class="photo">${t.photo ? `<img src="${esc(t.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ""}${showStock && t.left === 1 ? `<span class="stock last">ラスト1枚！</span>` : ""}</div>
+      <div class="photo">${t.photo ? `<img src="${esc(t.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ""}${t.soldOut ? `<span class="stock sold">売り切れ</span>` : showStock && t.left === 1 ? `<span class="stock last">ラスト1枚！</span>` : ""}</div>
       <div class="body">
       <div class="tags"><span class="tag">${esc(t.pref)}${t.city ? " " + esc(t.city) : ""}</span><span class="tag ${t.type === "d" ? "d" : "h"}">${t.type === "d" ? "平日" : "土日祝"}</span></div>
       ${t.desc
@@ -377,7 +389,7 @@ function render(){
         <div class="total">${t.off ? `<span class="off">${sameRate ? t.off + "%OFF" : yen(t.regular - t.price) + "円OFF"}</span> <s>¥${yen(t.regular)}</s>` : "1枚"}<b>¥${yen(t.price)}</b></div>
       </div>
       ${t.note ? `<div class="note">※ ${esc(t.note)}</div>` : ""}
-      <a class="go" href="${BASE_URL + encodeURIComponent(t.id)}">この券を購入する →</a>
+      ${t.soldOut ? `<span class="go done">売り切れました</span>` : `<a class="go" href="${BASE_URL + encodeURIComponent(t.id)}">この券を購入する →</a>`}
       </div>`;
     const d = a.querySelector("details");
     if(d) d.addEventListener("toggle", () => { d.open ? openIds.add(t.id) : openIds.delete(t.id); });
