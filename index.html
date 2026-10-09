@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>優待券タイムセール｜U39 GOLF</title>
-<meta name="description" content="39歳以下限定・U39 GOLFの優待プレー券タイムセール。全国のゴルフ場の特別プレー券を期間限定でご案内します。">
+<title>優待券 本日23:59まで｜U39 GOLF</title>
+<meta name="description" content="39歳以下限定・U39 GOLFの優待プレー券は本日23:59で販売終了。全国のゴルフ場の優待プレー券をご案内します。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -191,8 +191,8 @@ footer a{margin:0 8px;color:inherit}
     <div class="wrap">
       <span class="badge">39歳以下限定</span>
       <h1>
-        <span class="en">Time <em>Sale</em></span>
-        <span class="ja">優待プレー券、いまだけの特別販売。</span>
+        <span class="en">Last <em>Chance</em></span>
+        <span class="ja">優待プレー券、本日23:59で販売終了。</span>
       </h1>
       <p class="lead">全国のゴルフ場で使える優待券を、枚数限定でご案内。<br>仲間と4人で回れば、1人あたり<strong id="heroEach"></strong>から。</p>
       <div class="count" id="count" role="timer" aria-live="off" hidden>
@@ -255,7 +255,7 @@ footer a{margin:0 8px;color:inherit}
   <div class="final">
     <div class="wrap">
       <h2>なくなる前に、次のラウンドを決めよう。</h2>
-      <p>売り切れた券の再販売は未定です。</p>
+      <p>販売は本日23:59まで。売り切れた券の再販売は未定です。</p>
       <a class="cta" href="#tickets">販売中の優待券を見る</a>
     </div>
   </div>
@@ -428,7 +428,7 @@ function closeSale(){
   items = [];
   document.body.classList.add("closed");
   $("count").hidden = true;
-  document.querySelector(".hero h1 .ja").textContent = "タイムセールは終了しました。";
+  document.querySelector(".hero h1 .ja").textContent = "優待券の販売は終了しました。";
   document.querySelector(".hero .lead").textContent = "たくさんのご利用、ありがとうございました。優待券の最新の販売状況は、U39 GOLFの優待券一覧をご覧ください。";
   const cta = document.querySelector(".hero .cta");
   cta.textContent = "U39 GOLFの優待券一覧へ";
