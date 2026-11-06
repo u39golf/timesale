@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>優待券 本日23:59まで｜U39 GOLF</title>
-<meta name="description" content="39歳以下限定・U39 GOLFの優待プレー券は本日23:59で販売終了。全国のゴルフ場の優待プレー券をご案内します。">
+<title>優待券タイムセール｜U39 GOLF</title>
+<meta name="description" content="39歳以下限定・U39 GOLFの優待プレー券タイムセール。全国のゴルフ場の特別プレー券を期間限定でご案内します。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -189,12 +189,12 @@ footer a{margin:0 8px;color:inherit}
 <main>
   <div class="hero">
     <div class="wrap">
-      <span class="badge">39歳以下限定</span>
+      <span class="badge" id="badge">39歳以下限定</span>
       <h1>
-        <span class="en">Last <em>Chance</em></span>
-        <span class="ja">優待プレー券、本日23:59で販売終了。</span>
+        <span class="en">Time <em>Sale</em></span>
+        <span class="ja">優待プレー券、いまだけの特別販売。</span>
       </h1>
-      <p class="lead">全国のゴルフ場で使える優待券を、枚数限定でご案内。<br>仲間と4人で回れば、1人あたり<strong id="heroEach"></strong>から。</p>
+      <p class="lead"><span id="leadArea">全国</span>のゴルフ場で使える優待券を、枚数限定でご案内。<br>仲間と4人で回れば、1人あたり<strong id="heroEach"></strong>から。</p>
       <div class="count" id="count" role="timer" aria-live="off" hidden>
         <div class="label" id="countLabel">販売終了まで</div>
         <div class="digits"><b id="cd">--</b><span>日</span><b id="ch">--</b><span>時間</span><b id="cm">--</b><span>分</span><b id="cs">--</b><span>秒</span></div>
@@ -255,7 +255,7 @@ footer a{margin:0 8px;color:inherit}
   <div class="final">
     <div class="wrap">
       <h2>なくなる前に、次のラウンドを決めよう。</h2>
-      <p>販売は本日23:59まで。売り切れた券の再販売は未定です。</p>
+      <p>売り切れた券の再販売は未定です。</p>
       <a class="cta" href="#tickets">販売中の優待券を見る</a>
     </div>
   </div>
@@ -290,6 +290,9 @@ const AREAS = {
   "中国":["鳥取県","島根県","岡山県","広島県","山口県"],
   "四国・九州・沖縄":["徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"]
 };
+// エリア別のURL（例：?area=kanto）では、そのエリアの券だけを表示する
+const AREA_KEYS = {"tohoku":"北海道・東北","kanto":"関東","chubu":"甲信越・北陸・東海","kinki":"近畿","chugoku":"中国","shikoku-kyushu":"四国・九州・沖縄"};
+const AREA = AREA_KEYS[(new URLSearchParams(location.search).get("area") || "").toLowerCase()] || null;
 const yen = n => n.toLocaleString("ja-JP");
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -317,6 +320,7 @@ async function load(){
     items = data.tickets.map(decorate);
     const onSale = new Set(items.map(t => t.id));
     sold = lineup.filter(t => !onSale.has(t.id)).map(t => ({...decorate(t), soldOut: true}));
+    if(AREA){ items = items.filter(t => t.area === AREA); sold = sold.filter(t => t.area === AREA); }
     setCountdown(data);
     if(closed) return;
   }catch(e){
@@ -334,14 +338,15 @@ function summary(){
   $("heroEach").textContent = has ? minEach + "円" : "—";
   $("pEach").textContent = minEach;
   $("pCourse").textContent = new Set(items.map(t => t.course)).size;
-  $("pPref").textContent = "全国" + new Set(items.map(t => t.pref)).size + "府県";
+  const prefs = [...new Set(items.map(t => t.pref))];
+  $("pPref").textContent = AREA ? prefs.map(p => p.replace(/[都府県]$/, "")).join("・") : "全国" + prefs.length + "府県";
   $("pLeft").textContent = items.reduce((s, t) => s + t.left, 0);
 }
 
 function buildFilters(){
-  const areas = Object.keys(AREAS).filter(a => items.some(t => t.area === a));
+  const areas = AREA ? [] : Object.keys(AREAS).filter(a => items.some(t => t.area === a));
   if(state.area !== "all" && !areas.includes(state.area)) state.area = "all";
-  const chips = [["type","all","すべて"],["type","d","平日"],["type","h","土日祝"],null,["area","all","全国"],...areas.map(a => ["area",a,a])];
+  const chips = [["type","all","すべて"],["type","d","平日"],["type","h","土日祝"],...(AREA ? [] : [null,["area","all","全国"],...areas.map(a => ["area",a,a])])];
   const box = $("filters");
   box.replaceChildren();
   chips.forEach(c => {
@@ -428,7 +433,7 @@ function closeSale(){
   items = [];
   document.body.classList.add("closed");
   $("count").hidden = true;
-  document.querySelector(".hero h1 .ja").textContent = "優待券の販売は終了しました。";
+  document.querySelector(".hero h1 .ja").textContent = "タイムセールは終了しました。";
   document.querySelector(".hero .lead").textContent = "たくさんのご利用、ありがとうございました。優待券の最新の販売状況は、U39 GOLFの優待券一覧をご覧ください。";
   const cta = document.querySelector(".hero .cta");
   cta.textContent = "U39 GOLFの優待券一覧へ";
@@ -466,6 +471,12 @@ function tick(){
   timer = setTimeout(tick, 1000);
 }
 
+if(AREA){
+  document.title = AREA + "エリア 優待券タイムセール｜U39 GOLF";
+  $("badge").textContent = "39歳以下限定｜" + AREA + "エリア";
+  document.querySelector(".hero h1 .ja").textContent = AREA + "エリアの優待プレー券、いまだけの特別販売。";
+  $("leadArea").textContent = AREA + "エリア";
+}
 load();
 setInterval(() => { if(!document.hidden && !closed) load(); }, REFRESH_MS);
 </script>
