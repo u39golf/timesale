@@ -49,6 +49,21 @@ a{color:inherit}
 .hero h1 .en em{font-style:normal;color:var(--lime)}
 .hero h1 .ja{display:block;margin-top:18px;font-size:clamp(20px,4.6vw,34px)}
 .lead{margin:14px 0 0;max-width:620px;font-size:15px;color:rgba(255,255,255,.86)}
+/* エリア限定の札（?area= のときだけ表示） */
+.area-plate{position:relative;display:inline-flex;align-items:center;gap:14px;margin-top:18px;padding:12px 22px 12px 14px;border-radius:16px;
+  background:linear-gradient(120deg,rgba(200,240,60,.22),rgba(200,240,60,.06));border:2px solid var(--lime);box-shadow:0 0 0 6px rgba(200,240,60,.10),0 14px 30px rgba(0,0,0,.25);overflow:hidden}
+.area-plate[hidden]{display:none}
+.area-plate::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:30%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);animation:shine 3.2s ease-in-out infinite}
+@keyframes shine{0%,55%{left:-40%}100%{left:130%}}
+.area-plate .pin{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--lime);color:var(--green-ink)}
+.area-plate .pin svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.area-plate .t{display:flex;flex-direction:column;line-height:1.15}
+.area-plate .t .en{font-family:var(--num);font-weight:700;font-size:13px;letter-spacing:.22em;color:var(--lime)}
+.area-plate .t b{font-size:clamp(34px,10vw,52px);font-weight:900;letter-spacing:.02em;color:#fff}
+.area-plate .t b.long{font-size:clamp(24px,6.6vw,40px)}
+.area-plate .t b .seg{white-space:nowrap}
+.area-plate .t b small{font-size:.5em;margin-left:6px;color:var(--lime);font-weight:900;white-space:nowrap}
+.closed .area-plate{display:none}
 .closed .points,.closed #tickets,.closed .steps,.closed .notes,.closed .final,.closed .bar,.closed .hero .sub{display:none}
 .closed .hero{min-height:100vh}
 .count[hidden]{display:none}
@@ -190,6 +205,10 @@ footer a{margin:0 8px;color:inherit}
   <div class="hero">
     <div class="wrap">
       <span class="badge" id="badge">39歳以下限定</span>
+      <div class="area-plate" id="areaPlate" hidden>
+        <span class="pin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.6"/></svg></span>
+        <span class="t"><span class="en">AREA LIMITED</span><b id="areaBig"><span id="areaName"></span><small>エリア限定</small></b></span>
+      </div>
       <h1>
         <span class="en">Time <em>Sale</em></span>
         <span class="ja">優待プレー券、いまだけの特別販売。</span>
@@ -219,7 +238,7 @@ footer a{margin:0 8px;color:inherit}
 
   <section id="tickets">
     <div class="wrap">
-      <h2><span class="en">TICKETS</span>販売中の優待券</h2>
+      <h2><span class="en">TICKETS</span><span id="ticketsTitle">販売中の優待券</span></h2>
       <p class="notice"><span aria-hidden="true">!</span>ゴルフ利用税、昼食代等は別途必要になります。</p>
       <p class="desc">コース名をタップすると、紹介文が開きます。</p>
       <div class="filters" id="filters"></div>
@@ -473,8 +492,11 @@ function tick(){
 
 if(AREA){
   document.title = AREA + "エリア 優待券タイムセール｜U39 GOLF";
-  $("badge").textContent = "39歳以下限定｜" + AREA + "エリア";
-  document.querySelector(".hero h1 .ja").textContent = AREA + "エリアの優待プレー券、いまだけの特別販売。";
+  $("areaPlate").hidden = false;
+  $("areaName").innerHTML = AREA.split("・").map(a => `<span class="seg">${esc(a)}</span>`).join("・");
+  if(AREA.length > 4) $("areaBig").classList.add("long");
+  document.querySelector(".hero h1 .ja").textContent = AREA + "エリアの方だけにお届けする、優待プレー券の特別販売。";
+  $("ticketsTitle").textContent = AREA + "エリア限定の優待券";
   $("leadArea").textContent = AREA + "エリア";
 }
 load();
