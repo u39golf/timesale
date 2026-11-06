@@ -157,6 +157,33 @@ h2 .en{display:block;font-family:var(--num);font-size:15px;letter-spacing:.18em;
 .more-sold:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:32px 0}
 
+/* エリアへのリンク */
+.areas{padding:56px 0 8px}
+.areas + #tickets{padding-top:40px}
+.area-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:20px}
+.area-card{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:132px;padding:14px;border-radius:16px;overflow:hidden;text-decoration:none;color:#fff;
+  background:linear-gradient(135deg,#0a5a2c,var(--green-deep));box-shadow:0 8px 20px rgba(4,57,29,.18);transition:transform .15s ease,box-shadow .15s ease}
+.area-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.area-card::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(2,32,15,.15) 0%,rgba(2,32,15,.85) 100%)}
+.area-card > span{position:relative;z-index:2}
+.area-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(4,57,29,.28)}
+.area-card:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.area-card .en{font-family:var(--num);font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--lime)}
+.area-card .nm{font-size:18px;font-weight:900;line-height:1.3}
+.area-card .nm .seg{white-space:nowrap}
+.area-card .nm small{font-size:12px;margin-left:3px;color:var(--lime);white-space:nowrap}
+.area-card .pf{font-size:11px;color:rgba(255,255,255,.8);line-height:1.4}
+.area-card .ft{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px;font-size:11px;font-weight:700}
+.area-card .ft b{font-family:var(--num);font-size:18px;color:var(--lime);margin-right:2px}
+.area-card .go-arrow{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--lime);color:var(--green-ink);font-weight:900}
+.area-card.all{background:var(--lime);color:var(--green-ink);box-shadow:none;border:2px solid var(--green-ink)}
+.area-card.all::before{display:none}
+.area-card.all .en{color:var(--green)}
+.area-card.all .pf{color:var(--green-ink)}
+.area-card.all .ft b{color:var(--green-ink)}
+.area-card.all .go-arrow{background:var(--green-ink);color:var(--lime)}
+.closed .areas{display:none}
+
 /* steps */
 .steps{background:var(--green-ink);color:#fff}
 .steps h2 .en{color:var(--lime)}
@@ -247,6 +274,14 @@ footer a{margin:0 8px;color:inherit}
     </div>
   </section>
 
+  <section class="areas" id="areas" hidden>
+    <div class="wrap">
+      <h2><span class="en">AREA</span><span id="areasTitle">エリアから探す</span></h2>
+      <p class="desc" id="areasDesc">お住まいのエリアや、行きたいエリアの優待券をまとめて見られます。</p>
+      <div class="area-grid" id="areaGrid"></div>
+    </div>
+  </section>
+
   <section class="steps">
     <div class="wrap">
       <h2><span class="en">HOW TO</span>ご利用は、かんたん3ステップ</h2>
@@ -316,7 +351,7 @@ const yen = n => n.toLocaleString("ja-JP");
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-let items = [], sold = [], lineup = null, courses = null, end = null, timer = null, phase = "on", closed = false;
+let items = [], allItems = [], sold = [], lineup = null, courses = null, end = null, timer = null, phase = "on", closed = false;
 const state = {type:"all", area:"all", allSold:false};
 const SOLD_PREVIEW = 3;   // 売り切れは最初にこの枚数だけ見せ、残りは「売り切れをすべて見る」で開く
 const openIds = new Set();   // 紹介文を開いているカード（再読み込みしても開いたままにする）
@@ -339,6 +374,7 @@ async function load(){
     items = data.tickets.map(decorate);
     const onSale = new Set(items.map(t => t.id));
     sold = lineup.filter(t => !onSale.has(t.id)).map(t => ({...decorate(t), soldOut: true}));
+    allItems = items;
     if(AREA){ items = items.filter(t => t.area === AREA); sold = sold.filter(t => t.area === AREA); }
     setCountdown(data);
     if(closed) return;
@@ -349,6 +385,33 @@ async function load(){
   summary();
   buildFilters();
   render();
+  buildAreaLinks();
+}
+
+// トップページ：一覧の上に各エリアへのリンク／エリアページ：一覧の下に他のエリアと全国へのリンク
+function buildAreaLinks(){
+  const box = $("areaGrid");
+  const card = (href, cls, en, name, prefs, list) => {
+    const a = document.createElement("a");
+    a.className = "area-card" + (cls ? " " + cls : "");
+    a.href = href;
+    const photo = list.find(t => t.photo);
+    const minEach = list.length ? yen(Math.min(...list.map(t => t.each))) : "";
+    a.innerHTML = `${photo && !cls ? `<img src="${esc(photo.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
+      <span class="en">${en}</span><span class="nm">${cls ? esc(name) : name.split("・").map(a => `<span class="seg">${esc(a)}</span>`).join("・") + `<small>エリア</small>`}</span><span class="pf">${esc(prefs)}</span>
+      <span class="ft"><span>${list.length ? `<b>${list.length}</b>枚販売中` : "販売中の券はありません"}${minEach ? `<br>1人あたり${minEach}円〜` : ""}</span><span class="go-arrow" aria-hidden="true">→</span></span>`;
+    return a;
+  };
+  box.replaceChildren();
+  Object.entries(AREA_KEYS).forEach(([key, name]) => {
+    if(name === AREA) return;
+    const list = allItems.filter(t => t.area === name);
+    if(!list.length) return;
+    const prefs = [...new Set(list.map(t => t.pref.replace(/[都府県]$/, "")))].join("・");
+    box.append(card("?area=" + key, "", "AREA", name, prefs, list));
+  });
+  if(AREA) box.append(card("./", "all", "ALL AREA", "全国の優待券をすべて見る", "全エリアの券を一覧で", allItems));
+  $("areas").hidden = !box.children.length;
 }
 
 function summary(){
@@ -490,6 +553,13 @@ function tick(){
   timer = setTimeout(tick, 1000);
 }
 
+if(!AREA){
+  // トップページでは、エリアへのリンクを券の一覧の上に出す
+  $("tickets").before($("areas"));
+}else{
+  $("areasTitle").textContent = "ほかのエリアも見る";
+  $("areasDesc").textContent = "ほかのエリアでも、優待券のタイムセールを開催中です。";
+}
 if(AREA){
   document.title = AREA + "エリア 優待券タイムセール｜U39 GOLF";
   $("areaPlate").hidden = false;
