@@ -392,8 +392,8 @@ const openIds = new Set();   // 紹介文を開いているカード（再読み
 
 async function load(){
   try{
-    if(!courses) courses = await fetch(COURSES_URL).then(r => r.json()).catch(() => ({}));
-    if(!lineup) lineup = await fetch(LINEUP_URL).then(r => r.json()).then(d => d.tickets).catch(() => []);
+    if(!courses) courses = await fetch(COURSES_URL + "?t=" + Date.now(), {cache:"no-store"}).then(r => r.json()).catch(() => ({}));
+    if(!lineup) lineup = await fetch(LINEUP_URL + "?t=" + Date.now(), {cache:"no-store"}).then(r => r.json()).then(d => d.tickets).catch(() => []);
     const data = await fetch(DATA_URL + "?t=" + Date.now(), {cache:"no-store"}).then(r => r.json());
     const decorate = t => {
       const m = t.course.match(/^(.*?)【(.*)】$/);
