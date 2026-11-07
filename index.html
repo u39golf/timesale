@@ -508,16 +508,8 @@ function render(){
   // 値引きの札：全券が同じ割引率なら「◯%OFF」、券ごとに違うなら「◯円OFF」
   const sameRate = new Set(items.filter(t => t.off).map(t => t.off)).size === 1;
   live.forEach(g => grid.append(courseCard(g, sameRate)));
-  // 全券売り切れのコースは最後に、ボタンで開く
-  if(soldGroups.length){
-    const b = document.createElement("button");
-    b.type = "button"; b.className = "more-sold";
-    b.textContent = state.allSold ? "売り切れのコースをたたむ" : `売り切れのコースを見る（${soldGroups.length}）`;
-    b.setAttribute("aria-expanded", String(state.allSold));
-    b.addEventListener("click", () => { state.allSold = !state.allSold; render(); });
-    grid.append(b);
-    if(state.allSold) soldGroups.forEach(g => grid.append(courseCard(g, sameRate)));
-  }
+  // 全券売り切れのコースも、販売中のコースのあとに並べる
+  soldGroups.forEach(g => grid.append(courseCard(g, sameRate)));
 }
 
 function courseCard(g, sameRate){
