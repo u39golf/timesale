@@ -488,7 +488,7 @@ function render(){
   }
   // 券をゴルフ場ごとにまとめる（平日券・土日祝券を1枚のカードに）。売れた券はカードの中で「売り切れ」にする
   const byCourse = new Map();
-  [...items, ...(phase === "before" ? [] : sold)].filter(match).forEach(t => {
+  [...items, ...sold].filter(match).forEach(t => {
     if(!byCourse.has(t.course)) byCourse.set(t.course, {course:t.course, name:t.name, group:t.group, pref:t.pref, city:t.city, photo:t.photo, desc:t.desc, access:t.access, plans:[]});
     const g = byCourse.get(t.course);
     if(!g.photo && t.photo) g.photo = t.photo;

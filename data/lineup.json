@@ -1,5 +1,5 @@
 {
- "note": "2026-11-07 タイムセール開始時の掲載券（2026-11-06時点の販売中39枚）",
+ "note": "2026-11-07 タイムセールの掲載券（販売中39枚＋同じゴルフ場で売り切れ済みの11枚）。ここにあって在庫にない券を「売り切れ」で表示",
  "tickets": [
   {
    "id": 574,
@@ -425,6 +425,127 @@
    "pref": "鹿児島県",
    "type": "d",
    "price": 14000,
+   "regular": null,
+   "left": 0,
+   "note": "",
+   "photo": ""
+  },
+  {
+   "id": 535,
+   "course": "那須カントリークラブ",
+   "pref": "栃木県",
+   "type": "h",
+   "price": 20000,
+   "regular": null,
+   "left": 0,
+   "note": "",
+   "photo": ""
+  },
+  {
+   "id": 546,
+   "course": "関東国際カントリークラブ【アコーディア・ゴルフ】",
+   "pref": "栃木県",
+   "type": "h",
+   "price": 22000,
+   "regular": null,
+   "left": 0,
+   "note": "早朝スループレー対象外",
+   "photo": ""
+  },
+  {
+   "id": 548,
+   "course": "藤岡ゴルフクラブ【アコーディア・ゴルフ】",
+   "pref": "群馬県",
+   "type": "h",
+   "price": 26000,
+   "regular": null,
+   "left": 0,
+   "note": "早朝スループレー対象外",
+   "photo": ""
+  },
+  {
+   "id": 588,
+   "course": "麗澤瑞浪ゴルフ俱楽部 屛風山コース",
+   "pref": "岐阜県",
+   "type": "h",
+   "price": 8000,
+   "regular": null,
+   "left": 0,
+   "note": "※9ホール",
+   "photo": ""
+  },
+  {
+   "id": 570,
+   "course": "相生カントリー倶楽部",
+   "pref": "兵庫県",
+   "type": "h",
+   "price": 19800,
+   "regular": null,
+   "left": 0,
+   "note": "",
+   "photo": ""
+  },
+  {
+   "id": 577,
+   "course": "湯村カンツリークラブ",
+   "pref": "兵庫県",
+   "type": "d",
+   "price": 8000,
+   "regular": null,
+   "left": 0,
+   "note": "",
+   "photo": ""
+  },
+  {
+   "id": 562,
+   "course": "大和高原カントリークラブ【アコーディア・ゴルフ】",
+   "pref": "奈良県",
+   "type": "h",
+   "price": 24000,
+   "regular": null,
+   "left": 0,
+   "note": "早朝スループレー対象外",
+   "photo": ""
+  },
+  {
+   "id": 572,
+   "course": "備中高原北房カントリー倶楽部",
+   "pref": "岡山県",
+   "type": "h",
+   "price": 25800,
+   "regular": null,
+   "left": 0,
+   "note": "",
+   "photo": ""
+  },
+  {
+   "id": 519,
+   "course": "Blue Resortランドマークゴルフ倶楽部",
+   "pref": "岡山県",
+   "type": "h",
+   "price": 23500,
+   "regular": null,
+   "left": 0,
+   "note": "",
+   "photo": ""
+  },
+  {
+   "id": 521,
+   "course": "久米カントリークラブ",
+   "pref": "岡山県",
+   "type": "h",
+   "price": 23000,
+   "regular": null,
+   "left": 0,
+   "note": "",
+   "photo": ""
+  },
+  {
+   "id": 525,
+   "course": "サンライズヒルズカントリークラブ",
+   "pref": "香川県",
+   "type": "h",
+   "price": 23000,
    "regular": null,
    "left": 0,
    "note": "",
