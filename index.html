@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>優待券タイムセール｜U39 GOLF</title>
 <meta name="description" content="39歳以下限定・U39 GOLFの優待プレー券タイムセール。全国のゴルフ場の特別プレー券を期間限定でご案内します。">
+<!-- Google アナリティクス（U39 GOLFと同じGA4。購入ページへのリンクにも引き継ぐ） -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RSEK8L5KRZ"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "G-RSEK8L5KRZ", {linker: {domains: ["u39-golf.jp"]}});
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -380,7 +388,11 @@ const AREAS = {
 };
 // エリア別のURL（例：?area=kanto）では、そのエリアの券だけを表示する
 const AREA_KEYS = {"tohoku":"北海道・東北","kanto":"関東","chubu":"甲信越・北陸・東海","kinki":"近畿","chugoku":"中国","shikoku-kyushu":"四国・九州・沖縄"};
-const AREA = AREA_KEYS[(new URLSearchParams(location.search).get("area") || "").toLowerCase()] || null;
+const AREA_KEY = (new URLSearchParams(location.search).get("area") || "").toLowerCase();
+const AREA = AREA_KEYS[AREA_KEY] || null;
+// 購入ページへのリンクに付ける目印（GAで「タイムセールLPのどのエリアページから来たか」を見るため）
+const UTM = "?utm_source=timesale_lp&utm_medium=referral&utm_campaign=timesale_202611&utm_content=" + (AREA ? AREA_KEY : "all");
+const track = (name, params) => { try{ if(window.gtag) gtag("event", name, params); }catch(e){} };
 const yen = n => n.toLocaleString("ja-JP");
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -542,7 +554,7 @@ function planRow(p, sameRate){
     <span class="tag ${p.type}">${p.type === "d" ? "平日" : "土日祝"}</span>
     <div class="each"><b>${yen(p.each)}<small>円</small></b><span>/人</span>${last}</div>
     <div class="total">${total}</div>
-    ${p.soldOut ? `<span class="go done">売り切れ</span>` : `<a class="go" href="${BASE_URL + encodeURIComponent(p.id)}">購入する</a>`}
+    ${p.soldOut ? `<span class="go done">売り切れ</span>` : `<a class="go" href="${BASE_URL + encodeURIComponent(p.id) + UTM}" data-id="${p.id}" data-course="${esc(p.course)}" data-type="${p.type}" data-price="${p.price}" data-area="${esc(p.area)}">購入する</a>`}
     ${p.note ? `<div class="note">※ ${esc(p.note.replace(/^※\s*/, ""))}</div>` : ""}
   </li>`;
 }
@@ -616,6 +628,13 @@ if(AREA){
   $("ticketsTitle").textContent = AREA + "エリア限定の優待券";
   $("leadArea").textContent = AREA + "エリア";
 }
+// 「購入する」とエリアのバナーが押された回数をGAに送る
+document.addEventListener("click", e => {
+  const buy = e.target.closest("a.go[data-id]");
+  if(buy) track("timesale_buy_click", {lp_area: AREA_KEY || "all", ticket_id: buy.dataset.id, course: buy.dataset.course, ticket_type: buy.dataset.type === "d" ? "平日" : "土日祝", ticket_area: buy.dataset.area, price: Number(buy.dataset.price)});
+  const area = e.target.closest("a.area-card");
+  if(area) track("timesale_area_click", {lp_area: AREA_KEY || "all", to: area.getAttribute("href")});
+});
 load();
 setInterval(() => { if(!document.hidden && !closed) load(); }, REFRESH_MS);
 </script>
