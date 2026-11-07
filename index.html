@@ -499,8 +499,7 @@ function render(){
   const live = groups.filter(g => g.plans.some(p => !p.soldOut));
   const soldGroups = groups.filter(g => !g.plans.some(p => !p.soldOut));
   const nLive = live.reduce((s, g) => s + g.plans.filter(p => !p.soldOut).length, 0);
-  const nSold = groups.reduce((s, g) => s + g.plans.filter(p => p.soldOut).length, 0);
-  $("result").textContent = `${live.length}コース・${nLive}枚販売中` + (nSold ? `・${nSold}枚売り切れ` : "");
+  $("result").textContent = `${live.length}コース・${nLive}枚販売中`;
   if(!groups.length){
     grid.innerHTML = `<div class="empty">この条件の優待券は現在ありません。</div>`;
     return;
