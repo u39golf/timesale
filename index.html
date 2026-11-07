@@ -157,6 +157,40 @@ h2 .en{display:block;font-family:var(--num);font-size:15px;letter-spacing:.18em;
 .more-sold:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:32px 0}
 
+/* ゴルフ場ごとのカード（平日券・土日祝券を1枚に） */
+.grid{grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr))}
+.course{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.course .photo{border-radius:0;aspect-ratio:1480/620}
+.course .photo .place{position:absolute;left:10px;bottom:8px;color:#fff;font-size:12px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.course .photo .from{position:absolute;right:10px;top:10px;background:rgba(11,42,25,.88);color:#fff;border-radius:12px;padding:4px 10px;text-align:right;line-height:1.1}
+.course .photo .from small{display:block;font-size:10px;font-weight:700;color:var(--lime)}
+.course .photo .from b{font-family:var(--num);font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.course .photo .from b span{font-family:"Noto Sans JP",sans-serif;font-size:11px;margin-left:1px}
+.course .body{padding:12px 14px 14px}
+.course h3{margin:0;font-size:17px;font-weight:900;line-height:1.4}
+.course h3 small{display:block;font-size:11px;font-weight:500;color:var(--muted)}
+.course .more{margin-top:2px}
+.course.soldout .photo img{filter:grayscale(1) brightness(.85)}
+.course.soldout h3{opacity:.55}
+.plans{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.plan{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.plan .tag{grid-row:1/3;align-self:center;border:0;font-size:12px;font-weight:900;padding:4px 8px;border-radius:8px;color:#fff;text-align:center;min-width:52px}
+.plan .tag.d{background:var(--weekday);color:#fff}
+.plan .tag.h{background:var(--holiday);color:#fff}
+.plan .each{line-height:1.1}
+.plan .each b{font-family:var(--num);font-weight:800;font-size:28px;color:var(--green);font-variant-numeric:tabular-nums}
+.plan .each b small{font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:900}
+.plan .each span{font-size:11px;color:var(--muted);margin-left:2px}
+.plan .each .last1{display:inline-block;background:#e11900;color:#fff;font-size:10.5px;font-weight:900;padding:1px 6px;border-radius:5px;margin-left:6px;vertical-align:4px;animation:pulse 1.6s ease-in-out infinite}
+.plan .total{grid-column:2;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.4}
+.plan .total s{margin-right:4px}
+.plan .off{font-size:10.5px;padding:0 6px;border-radius:5px;margin-right:4px}
+.plan .note{grid-column:1/-1;margin:0;font-size:11px;color:var(--muted);line-height:1.5}
+.plan .go{grid-column:3;grid-row:1/3;margin:0;font-size:13px;padding:10px 14px;white-space:nowrap}
+.plan.sold{background:#f4f4f1}
+.plan.sold .tag{background:#9a9d9a}
+.plan.sold .each b{color:#8a8d8a}
+
 /* エリアへのリンク */
 .areas{padding:56px 0 8px}
 .areas + #tickets{padding-top:40px}
@@ -445,8 +479,6 @@ function render(){
   $("filters").querySelectorAll(".chip").forEach(b =>
     b.setAttribute("aria-pressed", String(state[b.dataset.key] === b.dataset.val)));
   const match = t => (state.type === "all" || t.type === state.type) && (state.area === "all" || t.area === state.area);
-  const list = items.filter(match);
-  const soldList = phase === "before" ? [] : sold.filter(match);   // 売り切れは一覧の最初にまとめて出す
   const grid = $("grid");
   grid.replaceChildren();
   if(!items.length){
@@ -454,50 +486,74 @@ function render(){
     grid.innerHTML = `<div class="empty">ただいま販売中の優待券はありません。次回の販売をお待ちください。</div>`;
     return;
   }
-  $("result").textContent = list.length + "枚販売中" + (soldList.length ? "・" + soldList.length + "枚売り切れ" : "");
-  // 値引きの札：全券が同じ割引率なら「◯%OFF」、券ごとに違うなら「◯円OFF」
-  // 「ラスト1枚！」の札はセール開始後、残り1枚の券にだけ出す
-  const showStock = phase !== "before";
-  const sameRate = new Set(items.filter(t => t.off).map(t => t.off)).size === 1;
-  if(!list.length && !soldList.length){
+  // 券をゴルフ場ごとにまとめる（平日券・土日祝券を1枚のカードに）。売れた券はカードの中で「売り切れ」にする
+  const byCourse = new Map();
+  [...items, ...(phase === "before" ? [] : sold)].filter(match).forEach(t => {
+    if(!byCourse.has(t.course)) byCourse.set(t.course, {course:t.course, name:t.name, group:t.group, pref:t.pref, city:t.city, photo:t.photo, desc:t.desc, access:t.access, plans:[]});
+    const g = byCourse.get(t.course);
+    if(!g.photo && t.photo) g.photo = t.photo;
+    g.plans.push(t);
+  });
+  const groups = [...byCourse.values()];
+  groups.forEach(g => g.plans.sort((a, b) => (a.type === b.type ? a.price - b.price : a.type === "d" ? -1 : 1)));
+  const live = groups.filter(g => g.plans.some(p => !p.soldOut));
+  const soldGroups = groups.filter(g => !g.plans.some(p => !p.soldOut));
+  const nLive = live.reduce((s, g) => s + g.plans.filter(p => !p.soldOut).length, 0);
+  const nSold = groups.reduce((s, g) => s + g.plans.filter(p => p.soldOut).length, 0);
+  $("result").textContent = `${live.length}コース・${nLive}枚販売中` + (nSold ? `・${nSold}枚売り切れ` : "");
+  if(!groups.length){
     grid.innerHTML = `<div class="empty">この条件の優待券は現在ありません。</div>`;
     return;
   }
-  const shownSold = state.allSold ? soldList : soldList.slice(0, SOLD_PREVIEW);
-  const hiddenSold = soldList.length - shownSold.length;
-  const more = () => {
-    if(soldList.length <= SOLD_PREVIEW) return;
+  // 値引きの札：全券が同じ割引率なら「◯%OFF」、券ごとに違うなら「◯円OFF」
+  const sameRate = new Set(items.filter(t => t.off).map(t => t.off)).size === 1;
+  live.forEach(g => grid.append(courseCard(g, sameRate)));
+  // 全券売り切れのコースは最後に、ボタンで開く
+  if(soldGroups.length){
     const b = document.createElement("button");
     b.type = "button"; b.className = "more-sold";
-    b.textContent = state.allSold ? "売り切れをたたむ" : "売り切れをすべて見る";
+    b.textContent = state.allSold ? "売り切れのコースをたたむ" : `売り切れのコースを見る（${soldGroups.length}）`;
     b.setAttribute("aria-expanded", String(state.allSold));
     b.addEventListener("click", () => { state.allSold = !state.allSold; render(); });
     grid.append(b);
-  };
-  [...shownSold, null, ...list].forEach(t => {
-    if(t === null){ more(); return; }
-    const a = document.createElement("article");
-    a.className = "ticket" + (t.soldOut ? " soldout" : "");
-    const title = `<h3>${esc(t.name)}${t.group ? `<small>${esc(t.group)}</small>` : ""}</h3>`;
-    a.innerHTML = `
-      <div class="photo">${t.photo ? `<img src="${esc(t.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ""}${t.soldOut ? `<span class="stock sold">売り切れ</span>` : showStock && t.left === 1 ? `<span class="stock last">ラスト1枚！</span>` : ""}</div>
-      <div class="body">
-      <div class="tags"><span class="tag">${esc(t.pref)}${t.city ? " " + esc(t.city) : ""}</span><span class="tag ${t.type === "d" ? "d" : "h"}">${t.type === "d" ? "平日" : "土日祝"}</span></div>
-      ${t.desc
-        ? `<details class="about"${openIds.has(t.id) ? " open" : ""}><summary>${title}<span class="more">コース紹介</span></summary><div class="panel">${facts(t)}<p>${esc(t.desc)}</p></div></details>`
+    if(state.allSold) soldGroups.forEach(g => grid.append(courseCard(g, sameRate)));
+  }
+}
+
+function courseCard(g, sameRate){
+  const a = document.createElement("article");
+  const liveP = g.plans.filter(p => !p.soldOut);
+  a.className = "course" + (liveP.length ? "" : " soldout");
+  const from = liveP.length ? Math.min(...liveP.map(p => p.each)) : null;
+  const title = `<h3>${esc(g.name)}${g.group ? `<small>${esc(g.group)}</small>` : ""}</h3>`;
+  a.innerHTML = `
+    <div class="photo">${g.photo ? `<img src="${esc(g.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
+      <span class="place">${esc(g.pref)}${g.city ? " " + esc(g.city) : ""}</span>
+      ${from ? `<span class="from"><small>4人なら1人</small><b>${yen(from)}<span>円〜</span></b></span>` : `<span class="stock sold">売り切れ</span>`}</div>
+    <div class="body">
+      ${g.desc || g.access
+        ? `<details class="about"${openIds.has(g.course) ? " open" : ""}><summary>${title}<span class="more">コース紹介</span></summary><div class="panel">${facts(g)}${g.desc ? `<p>${esc(g.desc)}</p>` : ""}</div></details>`
         : title}
-      <div class="cut"></div>
-      <div class="price">
-        <div class="each"><div class="k">4人でプレーなら1人あたり</div><div class="v">${yen(t.each)}<small>円</small></div></div>
-        <div class="total">${t.off ? `<span class="off">${sameRate ? t.off + "%OFF" : yen(t.regular - t.price) + "円OFF"}</span> <s>¥${yen(t.regular)}</s>` : "1枚"}<b>¥${yen(t.price)}</b></div>
-      </div>
-      ${t.note ? `<div class="note">※ ${esc(t.note)}</div>` : ""}
-      ${t.soldOut ? `<span class="go done">売り切れました</span>` : `<a class="go" href="${BASE_URL + encodeURIComponent(t.id)}">この券を購入する →</a>`}
-      </div>`;
-    const d = a.querySelector("details");
-    if(d) d.addEventListener("toggle", () => { d.open ? openIds.add(t.id) : openIds.delete(t.id); });
-    grid.append(a);
-  });
+      <ul class="plans">${g.plans.map(p => planRow(p, sameRate)).join("")}</ul>
+    </div>`;
+  const d = a.querySelector("details");
+  if(d) d.addEventListener("toggle", () => { d.open ? openIds.add(g.course) : openIds.delete(g.course); });
+  return a;
+}
+
+// 「ラスト1枚！」の札はセール開始後、残り1枚の券にだけ出す
+function planRow(p, sameRate){
+  const total = p.off
+    ? `<span class="off">${sameRate ? p.off + "%OFF" : yen(p.regular - p.price) + "円OFF"}</span><s>¥${yen(p.regular)}</s>1枚 ¥${yen(p.price)}`
+    : `1枚 ¥${yen(p.price)}`;
+  const last = !p.soldOut && phase !== "before" && p.left === 1 ? `<span class="last1">ラスト1枚！</span>` : "";
+  return `<li class="plan${p.soldOut ? " sold" : ""}">
+    <span class="tag ${p.type}">${p.type === "d" ? "平日" : "土日祝"}</span>
+    <div class="each"><b>${yen(p.each)}<small>円</small></b><span>/人</span>${last}</div>
+    <div class="total">${total}</div>
+    ${p.soldOut ? `<span class="go done">売り切れ</span>` : `<a class="go" href="${BASE_URL + encodeURIComponent(p.id)}">購入する</a>`}
+    ${p.note ? `<div class="note">※ ${esc(p.note.replace(/^※\s*/, ""))}</div>` : ""}
+  </li>`;
 }
 
 // 紹介文の上に出す「アクセス」の行（確認できたコースだけ）
